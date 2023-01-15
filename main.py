@@ -5,13 +5,10 @@ from email.utils import formataddr
 import os
 import configparser
 import pandas as pd
-import logging
-import time
+import utils
 
 # 配置文件
 config_file = 'config.ini' 
-# 日志文件
-log_file = 'mail_' + time.strftime("%Y%m%d", time.localtime()) + '.log'
 
 # 发送邮件
 def send_mail(item):
@@ -46,18 +43,12 @@ def send_mail(item):
             msg = '%s 发送失败' % message['To']
 
         smtp.quit() # 关闭连接, 结束smtp对象
-        logger(msg) # 写入日志
+        utils.logger(msg) # 写入日志
         print(msg)
     except smtplib.SMTPException as e:
         msg = '%s 发送失败' % e
-        logger(msg) # 写入日志
+        utils.logger(msg) # 写入日志
         print(msg)
-
-# 写入日志
-def logger(data):
-    logging.basicConfig(filename = log_file, encoding = 'utf-8', level = logging.DEBUG, 
-        format = '[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    logging.info(data) # 根据日期生成日志
 
 def main():
     if not os.path.exists(os.path.join(os.getcwd(), config_file)): # 检测配置文件是否存在
